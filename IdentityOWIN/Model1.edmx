@@ -71,7 +71,7 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="Arrival_time" Type="time" Precision="7" />
+          <Property Name="Arrival_time" Type="time" Precision="7" Nullable="false" />
           <Property Name="Departure_time" Type="time" Precision="7" />
           <Property Name="From" Type="varchar" MaxLength="50" />
           <Property Name="To" Type="varchar" MaxLength="50" />
@@ -81,10 +81,11 @@
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="User_Id" Type="nvarchar" MaxLength="128" Nullable="false" />
           <Property Name="Bus_Id" Type="int" Nullable="false" />
           <Property Name="Date" Type="date" />
+          <Property Name="ticketNo" Type="int" />
         </EntityType>
         <Association Name="dbo_Tickets">
           <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1" />
@@ -154,18 +155,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="Tickets1">
-          <End Role="Buses" Type="Self.Buses" Multiplicity="1" />
-          <End Role="Tickets" Type="Self.Tickets" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Buses">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Tickets">
-              <PropertyRef Name="Bus_Id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityContainer Name="ModelStoreContainer">
           <EntitySet Name="__MigrationHistory" EntityType="Self.__MigrationHistory" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AspNetRoles" EntityType="Self.AspNetRoles" Schema="dbo" store:Type="Tables" />
@@ -194,10 +183,6 @@
           <AssociationSet Name="FK_dbo_AspNetUserRoles_dbo_AspNetUsers_UserId" Association="Self.FK_dbo_AspNetUserRoles_dbo_AspNetUsers_UserId">
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
             <End Role="AspNetUserRoles" EntitySet="AspNetUserRoles" />
-          </AssociationSet>
-          <AssociationSet Name="Tickets1" Association="Self.Tickets1">
-            <End Role="Buses" EntitySet="Buses" />
-            <End Role="Tickets" EntitySet="Tickets" />
           </AssociationSet>
         </EntityContainer>
       </Schema>
@@ -270,23 +255,22 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Arrival_time" Type="Time" Precision="7" />
+          <Property Name="Arrival_time" Type="Time" Nullable="false" Precision="7" />
           <Property Name="Departure_time" Type="Time" Precision="7" />
           <Property Name="From" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="To" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="Type" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="Tickets" Relationship="Self.Tickets1" FromRole="Buses" ToRole="Tickets" />
         </EntityType>
         <EntityType Name="Ticket">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="User_Id" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="Bus_Id" Type="Int32" Nullable="false" />
           <Property Name="Date" Type="DateTime" Precision="0" />
+          <Property Name="ticketNo" Type="Int32" />
           <NavigationProperty Name="AspNetUser" Relationship="Self.dbo_Tickets" FromRole="Tickets" ToRole="AspNetUsers" />
-          <NavigationProperty Name="Bus" Relationship="Self.Tickets1" FromRole="Tickets" ToRole="Buses" />
         </EntityType>
         <Association Name="FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId">
           <End Role="AspNetUsers" Type="Self.AspNetUser" Multiplicity="1">
@@ -328,18 +312,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="Tickets1">
-          <End Role="Buses" Type="Self.Bus" Multiplicity="1" />
-          <End Role="Tickets" Type="Self.Ticket" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Buses">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Tickets">
-              <PropertyRef Name="Bus_Id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="AspNetUserRoles">
           <End Role="AspNetRoles" Type="Self.AspNetRole" Multiplicity="*" />
           <End Role="AspNetUsers" Type="Self.AspNetUser" Multiplicity="*" />
@@ -362,10 +334,6 @@
           </AssociationSet>
           <AssociationSet Name="dbo_Tickets" Association="Self.dbo_Tickets">
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
-            <End Role="Tickets" EntitySet="Tickets" />
-          </AssociationSet>
-          <AssociationSet Name="Tickets1" Association="Self.Tickets1">
-            <End Role="Buses" EntitySet="Buses" />
             <End Role="Tickets" EntitySet="Tickets" />
           </AssociationSet>
           <AssociationSet Name="AspNetUserRoles" Association="Self.AspNetUserRoles">
@@ -453,6 +421,7 @@
                 <ScalarProperty Name="User_Id" ColumnName="User_Id" />
                 <ScalarProperty Name="Bus_Id" ColumnName="Bus_Id" />
                 <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="ticketNo" ColumnName="ticketNo" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

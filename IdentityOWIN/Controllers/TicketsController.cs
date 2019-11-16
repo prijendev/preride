@@ -7,122 +7,88 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using IdentityOWIN;
+using Microsoft.AspNet.Identity;
 
 namespace IdentityOWIN.Controllers
 {
     public class TicketsController : Controller
     {
         private Entities1 db = new Entities1();
+        private Ticket tck  = new Ticket();
 
         // GET: Tickets
+        public ActionResult Index(int id, DateTime date)
+        {
+            
+            TempData["id"] = id;
+            TempData["date"] = date;
+
+            
+            return View();
+        }
+        [HttpPost]
         public ActionResult Index()
         {
-            var tickets = db.Tickets.Include(t => t.AspNetUser).Include(t => t.Bus);
-            return View(tickets.ToList());
-        }
+            
+            
+            var ticketlist = new List<String>();
 
-        // GET: Tickets/Details/5
-        public ActionResult Details(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Ticket ticket = db.Tickets.Find(id);
-            if (ticket == null)
-            {
-                return HttpNotFound();
-            }
-            return View(ticket);
-        }
+            //ViewBag["id"] = date;
+            //ViewBag.dt = dt;
+            //ViewBag["tickets"] = tick;
 
-        // GET: Tickets/Create
-        public ActionResult Create()
-        {
-            ViewBag.User_Id = new SelectList(db.AspNetUsers, "Id", "Email");
-            ViewBag.Bus_Id = new SelectList(db.Buses, "Id", "From");
+            /*var tickets = from m in db.Tickets select m;
+
+            tickets = tickets.Where(m => m.Bus_Id == id);
+            tickets = tickets.Where(m => m.Date == date);
+
+            tickets = tickets.Where(m => m.User_Id == user.GetUserId());
+
+            var tick = tickets.Select(m => m.ticketNo);*/
+            
+           //var tickets1 = db.Tickets.Include(t => t.AspNetUser).Include(t => t.Bus);
             return View();
         }
 
-        // POST: Tickets/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
+
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,User_Id,Bus_Id,Date")] Ticket ticket)
+        public ActionResult Book(string tickets)
         {
-            if (ModelState.IsValid)
+            
+
+            string str = tickets;
+            string[] tickets1;
+            tickets1 = str.Split(',');
+            int[] tk = new int[tickets1.Length];
+
+            
+
+            tck.Bus_Id =(int)TempData["id"];
+            tck.Date = (DateTime)TempData["date"];
+            var user = User.Identity;
+            tck.User_Id = user.GetUserId();
+
+            int i;
+            for( i=0; i<tickets1.Length; i++)
             {
-                db.Tickets.Add(ticket);
+                tk[i] = Convert.ToInt32(tickets[i]);
+                tck.ticketNo = tk[i];
+
+                db.Tickets.Add(tck);
                 db.SaveChanges();
-                return RedirectToAction("Index");
-            }
+                
 
-            ViewBag.User_Id = new SelectList(db.AspNetUsers, "Id", "Email", ticket.User_Id);
-            ViewBag.Bus_Id = new SelectList(db.Buses, "Id", "From", ticket.Bus_Id);
-            return View(ticket);
+            }
+            if (i == tickets1.Length)
+                return Content(tickets);
+            else
+                return View();
+           
         }
+       
+       
 
-        // GET: Tickets/Edit/5
-        public ActionResult Edit(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Ticket ticket = db.Tickets.Find(id);
-            if (ticket == null)
-            {
-                return HttpNotFound();
-            }
-            ViewBag.User_Id = new SelectList(db.AspNetUsers, "Id", "Email", ticket.User_Id);
-            ViewBag.Bus_Id = new SelectList(db.Buses, "Id", "From", ticket.Bus_Id);
-            return View(ticket);
-        }
-
-        // POST: Tickets/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,User_Id,Bus_Id,Date")] Ticket ticket)
-        {
-            if (ModelState.IsValid)
-            {
-                db.Entry(ticket).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }
-            ViewBag.User_Id = new SelectList(db.AspNetUsers, "Id", "Email", ticket.User_Id);
-            ViewBag.Bus_Id = new SelectList(db.Buses, "Id", "From", ticket.Bus_Id);
-            return View(ticket);
-        }
-
-        // GET: Tickets/Delete/5
-        public ActionResult Delete(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Ticket ticket = db.Tickets.Find(id);
-            if (ticket == null)
-            {
-                return HttpNotFound();
-            }
-            return View(ticket);
-        }
-
-        // POST: Tickets/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
-        {
-            Ticket ticket = db.Tickets.Find(id);
-            db.Tickets.Remove(ticket);
-            db.SaveChanges();
-            return RedirectToAction("Index");
-        }
+      
 
         protected override void Dispose(bool disposing)
         {

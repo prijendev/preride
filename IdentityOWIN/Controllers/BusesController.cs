@@ -7,16 +7,48 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using IdentityOWIN;
+using Microsoft.AspNet.Identity;
 
 namespace IdentityOWIN.Controllers
 {
+    [Authorize]
     public class BusesController : Controller
     {
         private Entities1 db = new Entities1();
 
         // GET: Buses
         public ActionResult Index()
+
         {
+
+
+
+            
+            return View(db.Buses.ToList());
+        }
+        [HttpPost]
+        public ActionResult Index(int? flag,string from,string to,Ticket tc)
+
+        {
+
+            //Session["flag"] = null;
+            DateTime dd =(DateTime)tc.Date;
+            var user = User.Identity;
+           
+            
+            ViewBag.dt = dd;
+            if (from != null && to !=null)
+            {
+                var buslist = new List<String>();
+
+                var bus = from m in db.Buses select m;
+
+                bus = bus.Where(m => m.From.Equals(from));
+                bus = bus.Where(m => m.To.Equals(to));
+                //Session["flag"] = "Admin";
+                return View(bus);
+            }
+            else
             return View(db.Buses.ToList());
         }
 

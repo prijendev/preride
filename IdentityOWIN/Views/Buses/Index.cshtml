@@ -4,7 +4,9 @@
     ViewBag.Title = "Index";
 }
 
-<h2>Index</h2>
+<h2>Buses</h2>
+@ViewBag.dt
+
 
 <p>
     @Html.ActionLink("Create New", "Create")
@@ -30,28 +32,40 @@
     </tr>
 
 @foreach (var item in Model) {
-    <tr>
+<tr>
+    <td>
+        @Html.DisplayFor(modelItem => item.Arrival_time)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.Departure_time)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.From)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.To)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.Type)
+    </td>
+    @if (Session["flag"] == null)
+    {
         <td>
-            @Html.DisplayFor(modelItem => item.Arrival_time)
+
+            @Html.ActionLink("View","Index", "Tickets", new { id = item.Id , date =(DateTime)ViewBag.dt},htmlAttributes: null)
+
         </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Departure_time)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.From)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.To)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Type)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
-            @Html.ActionLink("Details", "Details", new { id=item.Id }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.Id })
-        </td>
-    </tr>
+    }
+    else
+    {
+<td>
+    @Html.ActionLink("Edit", "Edit", new { id = item.Id })
+    @Html.ActionLink("Details", "Details", new { id = item.Id })
+    @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+    
+</td>
+    }
+</tr>
 }
 
 </table>

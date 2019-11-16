@@ -1,0 +1,29 @@
+﻿
+@{
+    ViewBag.Title = "Admin Panel";
+}
+
+
+
+@if (ViewBag.displayMenu == "Yes")
+{
+    <h2>Admin Panel</h2>
+        
+    <h1>Welcome Admin. Now you can create user Role.</h1>
+    <h4>
+        @Html.ActionLink("Manage Bus", "Index", "Buses")
+    </h4>
+    <h4>
+        @Html.ActionLink("Manage User", "Index", "Account")
+    </h4>
+    <h4>
+        @Html.ActionLink("Manage Role", "Index", "Role")
+    </h4>
+
+}
+else
+{
+    <h2>  Welcome <strong>@ViewBag.Name</strong> .<br><br>
+    You are not authorized for this page</h2>
+}
+

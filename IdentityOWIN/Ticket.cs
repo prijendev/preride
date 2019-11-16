@@ -11,15 +11,17 @@ namespace IdentityOWIN
 {
     using System;
     using System.Collections.Generic;
-    
+    using System.ComponentModel.DataAnnotations;
+
     public partial class Ticket
     {
         public int Id { get; set; }
         public string User_Id { get; set; }
         public int Bus_Id { get; set; }
+        [DataType(DataType.Date)]
         public Nullable<System.DateTime> Date { get; set; }
+        public Nullable<int> ticketNo { get; set; }
     
         public virtual AspNetUser AspNetUser { get; set; }
-        public virtual Bus Bus { get; set; }
     }
 }

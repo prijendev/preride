@@ -1,11 +1,18 @@
-﻿@model IdentityOWIN.Ticket
+﻿@model int[]
 
 @{
     ViewBag.Title = "Index";
 }
 
 
+<div class="bo">
+    
+    @foreach (int item in Model)
+    {
+        @item @Html.Label(",")
+    }
 
+</div>
 
 @using (Html.BeginForm("Book", "Tickets", FormMethod.Post))
 {
@@ -17,8 +24,10 @@
             <input type="submit" value="Book">
         </div>
     </div>
-    
+
 }
+
+
 
 <style>
     #holder {
@@ -142,11 +151,16 @@
     //init();
 
     //Case II: If already booked
-    var bookedSeats = '@ViewBag.tick';
+    var bookedSeats = [];
+
+    
+    //bookedSeats = ($('.bo').val).split(',');
+    
+
+
     init(bookedSeats);
 
-    $('.' + settings.seatCss).click(function ()
-    {
+    $('.' + settings.seatCss).click(function () {
         var str1 = [];
         if ($(this).hasClass(settings.selectedSeatCss)) {
             alert('This seat is already reserved');
@@ -154,12 +168,13 @@
         else {
             $(this).toggleClass(settings.selectingSeatCss);
 
-                $.each($('#place li.' + settings.selectedSeatCss + ' a, #place li.' + settings.selectingSeatCss + ' a'), function (index, value) {
-            str1.push($(this).attr('title'));
-        });
+            $.each($('#place li.' + settings.selectedSeatCss + ' a, #place li.' + settings.selectingSeatCss + ' a'), function (index, value) {
+                str1.push($(this).attr('title'));
+            });
 
+            //$('.lab').html($('.bo').val());
             $('.lab').html(str1.join(','));
-            $('#hidden').value() = $('.lab').html;
+            $('#hidden').val(str1.join(','));
         }
     });
 

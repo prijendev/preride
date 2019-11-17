@@ -22,9 +22,37 @@ namespace IdentityOWIN.Controllers
             
             TempData["id"] = id;
             TempData["date"] = date;
+            var user = User.Identity.GetUserId();
 
-            
-            return View();
+            var tickets = from m in db.Tickets select m;
+
+            tickets = tickets.Where(m => m.Bus_Id == id);
+           tickets = tickets.Where(m => m.Date == date);
+
+            tickets = tickets.Where(m => m.User_Id == user);
+
+            int[] tick1 = new int[30];
+            int i = 0;
+            foreach (var item in tickets)
+            {
+
+                tick1[i] = (int)item.ticketNo;
+                
+                i++;
+            }
+            int[] tick = new int[i];
+
+            for(int j=0;j<i;j++)
+            {
+                tick[j] = tick1[j];
+            }
+            ViewBag.tick = tick;
+
+            //var tick1 = tickets.Select(m => m.ticketNo);
+
+
+
+            return View(tick);
         }
         [HttpPost]
         public ActionResult Index()
@@ -71,7 +99,7 @@ namespace IdentityOWIN.Controllers
             int i;
             for( i=0; i<tickets1.Length; i++)
             {
-                tk[i] = Convert.ToInt32(tickets[i]);
+                tk[i] = Convert.ToInt32(tickets1[i]);
                 tck.ticketNo = tk[i];
 
                 db.Tickets.Add(tck);
